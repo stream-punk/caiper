@@ -1,0 +1,5 @@
+#/bin/sh
+
+python -m caiper 0 148 210 5
+mv paper.svg A5H.svg
+mv paper.pdf A5H.pdf
