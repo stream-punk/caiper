@@ -40,27 +40,29 @@ def vert(ctx, off, margin, twidth, height, grid):
         pos += grid * 2
 
 
-def page_mm(margin, width, height, grid):
+def page_mm(margin, width, height, grid, bg="true"):
     margin = float(margin) * to_point
     width = float(width) * to_point
     height = float(height) * to_point
     grid = float(grid) * to_point
-    return page(margin, width, height, grid)
+    bg = bg == "true"
+    return page(margin, width, height, grid, bg)
 
 
-def page(margin, width, height, grid):
+def page(margin, width, height, grid, bg=True):
     twidth = margin + width
     with cairo.SVGSurface("paper.svg", twidth, height) as srf:
-        page_srf(srf, margin, twidth, height, grid)
+        page_srf(srf, margin, twidth, height, grid, bg)
     with cairo.PDFSurface("paper.pdf", twidth, height) as srf:
-        page_srf(srf, margin, twidth, height, grid)
+        page_srf(srf, margin, twidth, height, grid, bg)
 
 
-def page_srf(srf, margin, twidth, height, grid):
+def page_srf(srf, margin, twidth, height, grid, bg=True):
     ctx = cairo.Context(srf)
-    ctx.set_source_rgb(*cbackground)
-    ctx.rectangle(0, 0, twidth, height)
-    ctx.fill()
+    if bg:
+        ctx.set_source_rgb(*cbackground)
+        ctx.rectangle(0, 0, twidth, height)
+        ctx.fill()
 
     ctx.set_source_rgb(*cmajor)
     ctx.set_line_width(lmajor)
