@@ -50,10 +50,16 @@ def page_mm(margin, width, height, grid, bg="true"):
 
 
 def page(margin, width, height, grid, bg=True):
-    twidth = margin + width
-    with cairo.SVGSurface("paper.svg", twidth, height) as srf:
+    if margin < 0:
+        twidth = width
+        pwidth = width - margin
+        margin = 0
+    else:
+        twidth = margin + width
+        pwidth = twidth
+    with cairo.SVGSurface("paper.svg", pwidth, height) as srf:
         page_srf(srf, margin, twidth, height, grid, bg)
-    with cairo.PDFSurface("paper.pdf", twidth, height) as srf:
+    with cairo.PDFSurface("paper.pdf", pwidth, height) as srf:
         page_srf(srf, margin, twidth, height, grid, bg)
 
 
