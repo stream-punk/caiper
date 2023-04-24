@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 python -m caiper 7 182 280.25 7 false
 mv paper.svg A4H7.svg

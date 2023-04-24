@@ -1,6 +1,7 @@
 __version__ = "0.1.0"
 
 import cairo
+import math
 
 to_point = 2.83465
 
@@ -40,16 +41,17 @@ def vert(ctx, off, margin, twidth, height, grid):
         pos += grid * 2
 
 
-def page_mm(margin, width, height, grid, bg="true"):
+def page_mm(margin, width, height, grid, bg="true", dot="false"):
     margin = float(margin) * to_point
     width = float(width) * to_point
     height = float(height) * to_point
     grid = float(grid) * to_point
     bg = bg == "true"
-    return page(margin, width, height, grid, bg)
+    dot = dot == "true"
+    return page(margin, width, height, grid, bg, dot)
 
 
-def page(margin, width, height, grid, bg=True):
+def page(margin, width, height, grid, bg=True, dot=False):
     if margin < 0:
         twidth = width
         pwidth = width - margin
@@ -57,10 +59,27 @@ def page(margin, width, height, grid, bg=True):
     else:
         twidth = margin + width
         pwidth = twidth
+    if dot:
+        func = page_dot
+    else:
+        func = page_srf
     with cairo.SVGSurface("paper.svg", pwidth, height) as srf:
-        page_srf(srf, margin, twidth, height, grid, bg)
+        func(srf, margin, twidth, height, grid, bg)
     with cairo.PDFSurface("paper.pdf", pwidth, height) as srf:
-        page_srf(srf, margin, twidth, height, grid, bg)
+        func(srf, margin, twidth, height, grid, bg)
+
+
+def page_dot(srf, margin, twidth, height, grid, bg=True):
+    ctx = cairo.Context(srf)
+    x = grid
+    ctx.set_source_rgb(*cmajor)
+    while x < twidth:
+        y = grid
+        while y < height:
+            ctx.arc(x, y, 0.5, 0, 2 * math.pi)
+            ctx.fill()
+            y += grid
+        x += grid
 
 
 def page_srf(srf, margin, twidth, height, grid, bg=True):

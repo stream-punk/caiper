@@ -1,0 +1,5 @@
+#!/bin/sh
+
+python -m caiper 0 210 297 6 false true
+mv paper.svg A4H7d.svg
+mv paper.pdf A4H7d.pdf 
